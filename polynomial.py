@@ -5,6 +5,10 @@ from pydantic import BaseModel
 class Polynomial(BaseModel):
     coffs: List[float|int]
 
+    model_config = {
+        "frozen": True
+    }
+    
     def __str__(self) -> str:
         return str(self.coffs)
     
