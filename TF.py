@@ -1,43 +1,23 @@
 from __future__ import annotations
 from typing import List
 from pydantic import BaseModel
+from polynomial import Polynomial
 
-def convolve(a: List[int], b: List[int]) -> List[int]:
-    """
-    [1,1] * [1,1] = [1,2,1]
-    """
-    res = [0] * (len(a)+len(b)-1)
-    for i, ai in enumerate(a):
-        for j, bj in enumerate(b):
-            res[i + j] += ai * bj
-    return res
-    
-def add(a: List[int], b: List[int]) -> List[int]:
-    """
-    [1,1] + [1,1,1] = [1,2,2]
-    """
-    max_len = max(len(a), len(b))
-    a = [0] * (max_len - len(a)) + a
-    b = [0] * (max_len - len(b)) + b
-    return [x + y for x, y in zip(a, b)]
 
-def subtract(a:List[int], b:List[int]):
-    """
-    [1,1,1] - [1,1] = [1,0,0]
-    """
-    max_len = max(len(a), len(b))
-    a = [0]*(max_len-len(a)) + a
-    b = [0]*(max_len-len(b)) + b
-    return [x-y for x,y in zip(a,b)]
     
+
+
 class TF(BaseModel):
-    nr: List[int]
-    dr: List[int]
+    nr: Polynomial
+    dr: Polynomial
 
     model_config = {
         "frozen": True
         }
 
+    def __repr__(self) -> str:
+        return super().__repr__()
+    
     def __mul__(self, other:TF) -> TF:
         """
         (tf1, tf2) => tf1 * tf2
@@ -87,10 +67,3 @@ class TF(BaseModel):
 
 one = TF(nr=[1],dr=[1])
 neg_one = TF(nr=[-1],dr=[1])
-
-if __name__=="__main__":
-    p1 = TF(nr=[1,2,3],dr=[4,5,6])
-    p2 = TF(nr=[1,2,3],dr=[4,5,6])
-    print(p1*p2+p1*p2)
-    print(p1*p2)
-    print(~p1)
